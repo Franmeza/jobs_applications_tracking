@@ -15,23 +15,23 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); //usuario que va a poder ser leido en toda la aplicacion
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState([]);
 
-  const signUp = async (user) => {
+  const signup = async (user) => {
     try {
       const res = await registerRequest(user);
-      console.log(res.data);
+
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      setErrors(errors.response.data);
-      console.log(error);
+      setErrors(error.response.data);
+      // console.log("error", error.response.data);
     }
   };
 
   //provider que envuelve a otros componentes
   return (
-    <AuthContext.Provider value={{ signUp, user, isAuthenticated, errors }}>
+    <AuthContext.Provider value={{ signup, user, isAuthenticated, errors }}>
       {children}
     </AuthContext.Provider>
   );

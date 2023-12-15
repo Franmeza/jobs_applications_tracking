@@ -10,7 +10,7 @@ export const connectDB = async () => {
     await mongoose.connect(
       `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.co83wo9.mongodb.net/`
     );
-    console.log("DB is connected");
+    console.log(">>>DB is connected");
   } catch (error) {
     console.log(error);
   }

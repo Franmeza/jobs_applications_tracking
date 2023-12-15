@@ -13,15 +13,14 @@ export const register = async (req, res) => {
   //   });
   try {
     const userFound = await User.findOne({ email });
-    if (userFound)
-      return res.status(400).json({ message: ["The email already exists"] });
+    if (userFound) return res.status(400).json(["The email is already in use"]);
 
     const passwordHashed = await bcrypt.hash(password, 10);
     // FORMA DOS CREAR USUARIO (aca no esta aun guardado en la BDD)
     const newUser = new User({
+      username,
       email,
       password: passwordHashed,
-      username,
     });
 
     const userSaved = await newUser.save(); //Guardar usuario en la BDD

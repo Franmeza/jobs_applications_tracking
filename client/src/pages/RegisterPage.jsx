@@ -9,18 +9,25 @@ function RegisterPage() {
     handleSubmit,
     formState: { errors },
   } = useForm(); //registra inputs
-  const { signUp, isAuthenticated } = useAuth();
+  const { signup, isAuthenticated, errors: registerErrors } = useAuth();
   const navigate = useNavigate();
-
-  const onSubmit = handleSubmit(async (values) => {
-    signUp(values);
-  });
 
   useEffect(() => {
     if (isAuthenticated) navigate("/jobs");
   }, [isAuthenticated]);
+
+  const onSubmit = handleSubmit((values) => {
+    // console.log(values);
+    signup(values);
+  });
+
   return (
     <div className="bg-zinc-800 max-w-md p-10 rounded-md">
+      {registerErrors.map((error, i) => (
+        <div key={i} className="bg-red-500 p-2 text-white">
+          {error}
+        </div>
+      ))}
       <form onSubmit={onSubmit}>
         <input
           type="text"
