@@ -2,18 +2,28 @@ import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { AuthProvider } from "./context/AuthContext"; //Importamos auth provider para que pueda ser usado en todos los componentes
+import JobsFormPage from "./pages/JobsFormPage";
+import JobsListPage from "./pages/JobsListPage";
+import ProfilePage from "./pages/ProfilePage";
+import HomePage from "./pages/HomePage";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<h1>Home</h1>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/jobs" element={<h1>Jobs</h1>} />
-        <Route path="/add-job" element={<h1>Add Job</h1>} />
-        <Route path="/jobs/:id" element={<h1>Job</h1>} />
-        <Route path="/profile" element={<h1>Profile</h1>} />
+        {/* Envolvemos en un Route las rutas que queremos esten protejidas y ejecutamos esta proteccion desde ProtectedRoutes */}
+        <Route element={<ProtectedRoutes />}>
+          {" "}
+          //
+          <Route path="/jobs" element={<JobsListPage />} />
+          <Route path="/add-job" element={<JobsFormPage />} />
+          <Route path="/jobs/:id" element={<JobsFormPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
       </Routes>
     </AuthProvider>
   );
