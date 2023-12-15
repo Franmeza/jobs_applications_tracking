@@ -12,6 +12,10 @@ export const register = async (req, res) => {
   //     username,
   //   });
   try {
+    const userFound = await User.findOne({ email });
+    if (userFound)
+      return res.status(400).json({ message: ["The email already exists"] });
+
     const passwordHashed = await bcrypt.hash(password, 10);
     // FORMA DOS CREAR USUARIO (aca no esta aun guardado en la BDD)
     const newUser = new User({
