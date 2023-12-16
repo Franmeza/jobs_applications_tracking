@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { createAccessToken } from "../libs/jwt.js";
+import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   const { email, password, username } = req.body;
@@ -53,7 +54,11 @@ export const login = async (req, res) => {
 
     const token = await createAccessToken({ id: userFound._id });
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      sameSite: "none", //la cookie no esta en el mismo dominio
+      secure: true,
+      httpOnly: false,
+    });
 
     res.json({
       id: userFound._id,
@@ -81,5 +86,26 @@ export const profile = async (req, res) => {
     id: userFound._id,
     username: userFound.username,
     email: userFound.email,
+  });
+};
+
+//funcion que verifica si el usuario existe, esta peticion se hace cada vez que la pagina se carga por primera vez
+export const verifyToken = async (req, res) => {
+  const { token } = req.cookies;
+
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+  //verificar el token que esta recibiendo
+  jwt.verify(token, "secret", async (err, user) => {
+    if (err) return res.status(401).json({ message: "Unauthorized" });
+
+    const userFound = await User.findById(user.id);
+    if (!userFound) return res.status(401).json({ message: "Unauthorized" });
+
+    return res.json({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+    });
   });
 };

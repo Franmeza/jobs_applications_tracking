@@ -9,7 +9,12 @@ import cors from "cors";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true, //poder tener acceso a los header y leer las cookies
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json()); //necesario para que procese los objetos json enviados por request
 app.use(cookieParser()); //permite convertir las cookies en un json para que el backend las pueda leer

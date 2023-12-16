@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { registerRequest } from "../api/auth";
+import { registerRequest, verifyTokenRequest } from "../api/auth";
 import { loginRequest } from "../api/auth";
 import Cookies from "js-cookie";
 
@@ -17,6 +17,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); //usuario que va a poder ser leido en toda la aplicacion
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState([]);
 
   const signup = async (user) => {
@@ -34,7 +35,9 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
-      console.log("res-signin", res);
+      setUser(user);
+      setIsAuthenticated(true);
+      // console.log("res-signin", res);
     } catch (error) {
       if (Array.isArray(error.response.data)) {
         return setErrors(error.response.data);
@@ -53,9 +56,32 @@ export const AuthProvider = ({ children }) => {
     }
   }, [errors]);
 
+  //el siguiente useEffect es para que cada vez que se renderice una de las paginas protegidas, este se ejecute y verifique si hay token o no
   useEffect(() => {
-    const cookies = Cookies.get(); //leer las cookies
-    if (cookies.token) console.log(cookies.token);
+    async function checkLogin() {
+      const cookies = Cookies.get(); //leer las cookies
+      if (cookies.token) {
+        try {
+          const res = await verifyTokenRequest(cookies.token);
+          // console.log(res);
+          if (!res.data) {
+            setIsAuthenticated(false);
+            setLoading(false);
+            setUser(null);
+            return;
+          }
+          setIsAuthenticated(true);
+          setUser(res.data);
+          setLoading(false);
+        } catch (error) {
+          setIsAuthenticated(false);
+          setUser(null);
+          setLoading(false);
+        }
+      }
+      setLoading(false);
+    }
+    checkLogin();
   }, []);
 
   //provider que envuelve a otros componentes
@@ -67,6 +93,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         errors,
         signin,
+        loading,
       }}
     >
       {children}

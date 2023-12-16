@@ -1,9 +1,9 @@
-import axios from "axios";
-
-const { VITE_API } = import.meta.env;
+import axios from "./axios"; //Este es el axios configurado
 
 export const registerRequest = async (user) => {
-  await axios.post(`${VITE_API}/register`, user);
+  await axios.post(`/register`, user);
 };
 
-export const loginRequest = (user) => axios.post(`${VITE_API}/login`, user);
+export const loginRequest = (user) => axios.post(`/login`, user);
+
+export const verifyTokenRequest = () => axios.get("/verify");
