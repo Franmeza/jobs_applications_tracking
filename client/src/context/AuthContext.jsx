@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { registerRequest, verifyTokenRequest } from "../api/auth";
-import { loginRequest } from "../api/auth";
+import {
+  registerRequest,
+  verifyTokenRequest,
+  logOutRequest,
+  loginRequest,
+} from "../api/auth";
+
 import Cookies from "js-cookie";
 
 export const AuthContext = createContext(); //Crea contexto de autenticacion
@@ -35,6 +40,7 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
+
       setUser(user);
       setIsAuthenticated(true);
       // console.log("res-signin", res);
@@ -43,6 +49,16 @@ export const AuthProvider = ({ children }) => {
         return setErrors(error.response.data);
       }
       setErrors([error.response.data.message]);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await logOutRequest();
+      setUser(null);
+      setIsAuthenticated(false);
+    } catch (error) {
+      setErrors(error.response.data);
     }
   };
 
@@ -94,6 +110,7 @@ export const AuthProvider = ({ children }) => {
         errors,
         signin,
         loading,
+        logout,
       }}
     >
       {children}

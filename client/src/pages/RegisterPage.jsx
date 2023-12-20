@@ -14,7 +14,7 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/jobs");
+    if (isAuthenticated) navigate("/login");
   }, [isAuthenticated]);
 
   const onSubmit = handleSubmit((values) => {

@@ -7,24 +7,29 @@ import JobsListPage from "./pages/JobsListPage";
 import ProfilePage from "./pages/ProfilePage";
 import HomePage from "./pages/HomePage";
 import ProtectedRoutes from "./ProtectedRoutes";
+import { JobProvider } from "./context/JobsContext";
+import NavBar from "./components/NavBar";
 
 function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        {/* Envolvemos en un Route las rutas que queremos esten protejidas y ejecutamos esta proteccion desde ProtectedRoutes */}
-        <Route element={<ProtectedRoutes />}>
-          {" "}
-          //
-          <Route path="/jobs" element={<JobsListPage />} />
-          <Route path="/add-job" element={<JobsFormPage />} />
-          <Route path="/jobs/:id" element={<JobsFormPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-        </Route>
-      </Routes>
+      <JobProvider>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          {/* Envolvemos en un Route las rutas que queremos esten protejidas y ejecutamos esta proteccion desde ProtectedRoutes */}
+          <Route element={<ProtectedRoutes />}>
+            {" "}
+            //
+            <Route path="/jobs" element={<JobsListPage />} />
+            <Route path="/add-job" element={<JobsFormPage />} />
+            <Route path="/jobs/:id" element={<JobsFormPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
+        </Routes>
+      </JobProvider>
     </AuthProvider>
   );
 }
